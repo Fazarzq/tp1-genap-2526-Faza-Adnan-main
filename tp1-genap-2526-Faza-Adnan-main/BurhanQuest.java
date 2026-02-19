@@ -853,14 +853,253 @@ public class BurhanQuest {
                     }
                     break;
                 }
-                case "9":
+                case "9": {
                     // TODO: Tampilkan daftar quest terurut
-                    System.out.println("Belum diimplementasikan");
+                    if (questData.length() == 0) {
+                        System.out.println("Belum ada data quest.");
+                        break;
+                    }
+
+                    String sortAttrQ = "";
+                    boolean validAttrQ = false;
+                    while (!validAttrQ) {
+                        System.out.println("Urutkan daftar quest");
+                        System.out.println("1. Berdasarkan tingkat kesulitan");
+                        System.out.println("2. Berdasarkan reward");
+                        System.out.println("3. Berdasarkan bonus exp"); 
+                        System.out.println("X. Kembali ke menu utama");
+                        System.out.print("Masukkan input: ");
+                        sortAttrQ = input.nextLine().trim();
+
+                        if (sortAttrQ.equalsIgnoreCase("x")) break;
+                        if (sortAttrQ.equals("1") || sortAttrQ.equals("2") || sortAttrQ.equals("3")) {
+                            validAttrQ = true;
+                        } else {
+                            System.out.println("Pilihan tidak valid. Harap masukkan pilihan dengan benar.");
+                        }
+                    }
+                    if (sortAttrQ.equalsIgnoreCase("x")) break;
+
+                    String sortOrderQ = "";
+                    boolean validOrderQ = false;
+                    while (!validOrderQ) {
+                        System.out.print("Masukkan order urutan (asc/desc), masukkan x untuk kembali ke menu utama: ");
+                        sortOrderQ = input.nextLine().trim();
+                        if (sortOrderQ.equalsIgnoreCase("x")) break;
+                        if (sortOrderQ.equalsIgnoreCase("asc") || sortOrderQ.equalsIgnoreCase("desc")) {
+                            validOrderQ = true;
+                        } else {
+                            System.out.println("Urutan tidak valid. Harap masukkan urutan dengan benar.");
+                        }
+                    }
+                    if (sortOrderQ.equalsIgnoreCase("x")) break;
+
+                    System.out.println("Daftar quest terurut:");
+
+                    String tempQuestData = questData;
+
+                    while (tempQuestData.length() > 0) {
+                        Scanner sc = new Scanner(tempQuestData);
+                        String bestLine = "";
+
+                        int bestValInt = (sortOrderQ.equalsIgnoreCase("asc")) ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+                        
+                        while (sc.hasNextLine()) {
+                            String line = sc.nextLine();
+                            
+                            String rewardStr = line.substring(line.indexOf(REWARD_IDENTIFIER) + 1, line.indexOf(EXP_IDENTIFIER));
+                            String bonusStr = line.substring(line.indexOf(EXP_IDENTIFIER) + 1, line.indexOf(DIFFICULTY_IDENTIFIER));
+                            String diffStr = line.substring(line.indexOf(DIFFICULTY_IDENTIFIER) + 1, line.indexOf(STATUS_IDENTIFIER));
+
+                            int currentVal = 0;
+
+                            if (sortAttrQ.equals("1")) { 
+                                if (diffStr.equals("mudah")) currentVal = 1;
+                                else if (diffStr.equals("menengah")) currentVal = 2;
+                                else if (diffStr.equals("sulit")) currentVal = 3;
+                            } else if (sortAttrQ.equals("2")) { 
+                                currentVal = Integer.parseInt(rewardStr);
+                            } else if (sortAttrQ.equals("3")) { 
+                                currentVal = Integer.parseInt(bonusStr);
+                            }
+
+                            boolean updateBest = false;
+                            if (bestLine.equals("")) {
+                                updateBest = true;
+                            } else {
+                                if (sortOrderQ.equalsIgnoreCase("asc")) {
+                                    if (currentVal < bestValInt) updateBest = true;
+                                } else { 
+                                    if (currentVal > bestValInt) updateBest = true;
+                                }
+                            }
+
+                            if (updateBest) {
+                                bestValInt = currentVal;
+                                bestLine = line;
+                            }
+                        }
+
+                        if (!bestLine.equals("")) {
+                            String id = bestLine.substring(0, bestLine.indexOf(NAME_IDENTIFIER));
+                            String nama = bestLine.substring(bestLine.indexOf(NAME_IDENTIFIER) + 1, bestLine.indexOf(DESC_IDENTIFIER));
+                            String deskripsi = bestLine.substring(bestLine.indexOf(DESC_IDENTIFIER) + 1, bestLine.indexOf(REWARD_IDENTIFIER));
+                            String reward = bestLine.substring(bestLine.indexOf(REWARD_IDENTIFIER) + 1, bestLine.indexOf(EXP_IDENTIFIER));
+                            String bonus = bestLine.substring(bestLine.indexOf(EXP_IDENTIFIER) + 1, bestLine.indexOf(DIFFICULTY_IDENTIFIER));
+                            String kesulitan = bestLine.substring(bestLine.indexOf(DIFFICULTY_IDENTIFIER) + 1, bestLine.indexOf(STATUS_IDENTIFIER));
+                            String status = bestLine.substring(bestLine.indexOf(STATUS_IDENTIFIER) + 1);
+
+                            String starEmoji = "";
+                            if (kesulitan.equals("mudah")) starEmoji = "\u2605"; 
+                            else if (kesulitan.equals("menengah")) starEmoji = "\u2605\u2605"; 
+                            else if (kesulitan.equals("sulit")) starEmoji = "\u2605\u2605\u2605"; 
+
+                            String statusEmoji = "";
+                            if (status.equals("tersedia")) statusEmoji = "\ud83d\udfe2"; 
+                            else if (status.startsWith("diambil")) statusEmoji = "\u231b"; 
+                            else if (status.equals("selesai")) statusEmoji = "\ud83c\udfc6"; 
+
+                            System.out.println("ID Quest: " + id);
+                            System.out.println("Nama Quest: " + nama);
+                            System.out.println("Deskripsi Quest: " + deskripsi);
+                            System.out.println("Reward Quest: " + reward + " koin");
+                            System.out.println("Bonus Exp Quest: " + bonus + " poin exp");
+                            System.out.println("Tingkat Kesulitan Quest: " + starEmoji);
+                            System.out.println("Status Quest: " + status + " " + statusEmoji);
+                            System.out.println();
+                            
+                            tempQuestData = tempQuestData.replace(bestLine + "\n", "");
+                        } else {
+                            break;
+                        }
+                    }
                     break;
-                case "10":
+                }
+                case "10": {
                     // TODO: Tampilkan daftar pengembara terurut
-                    System.out.println("Belum diimplementasikan");
+                    if (travelerData.length() == 0) {
+                        System.out.println("Belum ada data pengembara.");
+                        break;
+                    }
+
+                    String sortAttrT = "";
+                    boolean validAttrT = false;
+                    while (!validAttrT) {
+                        System.out.println("Urutkan daftar pengembara");
+                        System.out.println("1. Berdasarkan nama");
+                        System.out.println("2. Berdasarkan level");
+                        System.out.println("3. Berdasarkan exp");
+                        System.out.println("X. Kembali ke menu utama");
+                        System.out.print("Masukkan input: ");
+                        sortAttrT = input.nextLine().trim();
+
+                        if (sortAttrT.equalsIgnoreCase("x")) break;
+                        if (sortAttrT.equals("1") || sortAttrT.equals("2") || sortAttrT.equals("3")) {
+                            validAttrT = true;
+                        } else {
+                            System.out.println("Pilihan tidak valid. Harap masukkan pilihan dengan benar.");
+                        }
+                    }
+                    if (sortAttrT.equalsIgnoreCase("x")) break;
+
+                    String sortOrderT = "";
+                    boolean validOrderT = false;
+                    while (!validOrderT) {
+                        System.out.print("Masukkan order urutan (asc/desc), masukkan x untuk kembali ke menu utama: ");
+                        sortOrderT = input.nextLine().trim();
+                        if (sortOrderT.equalsIgnoreCase("x")) break;
+                        if (sortOrderT.equalsIgnoreCase("asc") || sortOrderT.equalsIgnoreCase("desc")) {
+                            validOrderT = true;
+                        } else {
+                            System.out.println("Urutan tidak valid. Harap masukkan urutan dengan benar.");
+                        }
+                    }
+                    if (sortOrderT.equalsIgnoreCase("x")) break;
+
+                    System.out.println("Daftar pengembara terurut:");
+                    
+                    String tempTravelerData = travelerData;
+
+                    while (tempTravelerData.length() > 0) {
+                        Scanner sc = new Scanner(tempTravelerData);
+                        String bestLine = "";
+
+                        String bestValStr = null; 
+                        long bestValLong = (sortOrderT.equalsIgnoreCase("asc")) ? Long.MAX_VALUE : Long.MIN_VALUE;
+                        
+                        while (sc.hasNextLine()) {
+                            String line = sc.nextLine();
+
+                            String nama = line.substring(line.indexOf(NAME_IDENTIFIER) + 1, line.indexOf(LEVEL_IDENTIFIER));
+                            String levelStr = line.substring(line.indexOf(LEVEL_IDENTIFIER) + 1, line.indexOf(EXP_IDENTIFIER));
+                            String expStr = line.substring(line.indexOf(EXP_IDENTIFIER) + 1, line.indexOf(STATUS_IDENTIFIER));
+                            
+                            boolean updateBest = false;
+
+                            if (sortAttrT.equals("1")) { 
+                                if (bestLine.equals("")) {
+                                    updateBest = true;
+                                } else {
+                                    int compare = nama.compareToIgnoreCase(bestValStr);
+                                    if (sortOrderT.equalsIgnoreCase("asc")) {
+                                        if (compare < 0) updateBest = true; 
+                                    } else {
+                                        if (compare > 0) updateBest = true; 
+                                    }
+                                }
+                                
+                                if (updateBest) {
+                                    bestValStr = nama;
+                                    bestLine = line;
+                                }
+
+                            } else { 
+                                long currentVal = 0;
+                                if (sortAttrT.equals("2")) currentVal = Long.parseLong(levelStr);
+                                else if (sortAttrT.equals("3")) currentVal = Long.parseLong(expStr);
+
+                                if (bestLine.equals("")) {
+                                    updateBest = true;
+                                } else {
+                                    if (sortOrderT.equalsIgnoreCase("asc")) {
+                                        if (currentVal < bestValLong) updateBest = true;
+                                    } else {
+                                        if (currentVal > bestValLong) updateBest = true;
+                                    }
+                                }
+
+                                if (updateBest) {
+                                    bestValLong = currentVal;
+                                    bestLine = line;
+                                }
+                            }
+                        }
+
+                        if (!bestLine.equals("")) {
+                            String id = bestLine.substring(0, bestLine.indexOf(NAME_IDENTIFIER));
+                            String nama = bestLine.substring(bestLine.indexOf(NAME_IDENTIFIER) + 1, bestLine.indexOf(LEVEL_IDENTIFIER));
+                            String level = bestLine.substring(bestLine.indexOf(LEVEL_IDENTIFIER) + 1, bestLine.indexOf(EXP_IDENTIFIER));
+                            String exp = bestLine.substring(bestLine.indexOf(EXP_IDENTIFIER) + 1, bestLine.indexOf(STATUS_IDENTIFIER));
+                            String status = bestLine.substring(bestLine.indexOf(STATUS_IDENTIFIER) + 1);
+
+                            String statusEmoji = "";
+                            if (status.equals("kosong")) statusEmoji = "\u2705"; 
+                            else if (status.startsWith("dalam quest")) statusEmoji = "\u274c";
+
+                            System.out.println("ID Pengembara: " + id);
+                            System.out.println("Nama Pengembara: " + nama);
+                            System.out.println("Level Pengembara: " + level);
+                            System.out.println("Exp Pengembara: " + exp + " poin exp");
+                            System.out.println("Status Pengembara: " + status + " " + statusEmoji);
+                            System.out.println();
+                            
+                            tempTravelerData = tempTravelerData.replace(bestLine + "\n", "");
+                        } else {
+                            break;
+                        }
+                    }
                     break;
+                }
                 case "11": {
                     // TODO: Keluar
                     System.out.println("Terima kasih telah menggunakan BurhanQuest!");

@@ -46,7 +46,8 @@ public class BurhanQuest {
         System.out.println("Mari kita mulai dengan membuat sejumlah data quest dan pengembara.");
 
         // TODO: Seeding data quest dan pengembara
-        int questCount, travelerCount;
+        int questCount = 0;
+        int travelerCount = 0;
         boolean invalidInput = true;
 
         // TODO: Input banyak quest dan pengembara
